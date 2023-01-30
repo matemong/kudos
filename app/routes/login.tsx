@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Layout } from "~/components/layout";
 import { FormField } from "~/components/form-field";
 import { useState } from "react";
@@ -71,15 +72,17 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Login() {
   const actionData = useActionData();
 
+  const firstLoad = useRef(true);
   const [formError, setFormError] = useState(actionData?.error || "");
   const [errors, setErrors] = useState(actionData?.errors || {});
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-  });
+    email: actionData?.fields?.email || '',
+    password: actionData?.fields?.password || '',
+    firstName: actionData?.fields?.lastName || '',
+    lastName: actionData?.fields?.firstName || '',
+
+  })
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -90,6 +93,29 @@ export default function Login() {
       [field]: event.target.value,
     }));
   };
+  useEffect(() => {
+    if (!firstLoad.current) {
+      const newState = {
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+      };
+      setErrors(newState);
+      setFormError("");
+      setFormData(newState);
+    }
+  }, [action]);
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      setFormError("");
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    firstLoad.current = false;
+  }, []);
 
   return (
     <Layout>
