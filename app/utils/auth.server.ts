@@ -20,8 +20,8 @@ const storage = createCookieSessionStorage({
   },
 });
 
-export const register = async (form: RegisterForm) => {
-  const exists = await prisma.user.count({ where: { email: form.email } });
+export const register = async (user: RegisterForm) => {
+  const exists = await prisma.user.count({ where: { email: user.email } });
 
   if (exists) {
     return json(
@@ -30,13 +30,13 @@ export const register = async (form: RegisterForm) => {
     );
   }
 
-  const newUser = await createUser(form);
+  const newUser = await createUser(user);
 
   if (!newUser) {
     return json(
       {
         error: "Something went wrong trying to create a new user",
-        fields: { email: form.email, password: form.password },
+        fields: { email: user.email, password: user.password },
       },
       {
         status: 400,
@@ -47,14 +47,14 @@ export const register = async (form: RegisterForm) => {
   return createUserSession(newUser.id, '/');
 };
 
-export const login = async (form: LoginForm) => {
+export const login = async ({ email, password }: LoginForm) => {
   const user = await prisma.user.findUnique({
-    where: {
-      email: form.email,
-    },
+    where: 
+      { email }
+    
   });
 
-  if (!user || !(await bcrypt.compare(form.password, user.password))) {
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return json({ error: "Incorrect login" }, { status: 400 });
   }
 
