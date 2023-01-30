@@ -48,7 +48,7 @@ export default function Login() {
           />
           <FormField
             htmlFor="password"
-            label="password"
+            label="Password"
             type="password"
             value={formData.password}
             onChange={(e) => handleInputChange(e, "password")}
@@ -72,11 +72,14 @@ export default function Login() {
           ) : null}
 
           <div className="w-full text-center">
-            <input
+            <button
+              name="_action"
+              value={action}
               type="submit"
               className="rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-              value={action === "login" ? "Sign In" : "Sign Up"}
-            ></input>
+            >
+              {action === "login" ? "Sign In" : "Sign Up"}
+            </button>
           </div>
         </form>
       </div>
