@@ -12,10 +12,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Home() {
-    const {users} = useLoaderData();
+  const { users } = useLoaderData();
   return (
     <Layout>
-        <Outlet></Outlet>
+      <Outlet></Outlet>
       <div className="h-full flex">
         <UserPanel users={users} />
       </div>
