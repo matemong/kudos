@@ -7,7 +7,8 @@ import { UserCircle } from "~/components/user-circle";
 import { useState } from "react";
 import { SelectBox } from "~/components/select-box";
 import { backgroundColorMap, colorMap, emojiMap } from "~/utils/constants";
-import { KudoStyle } from "@prisma/client";
+import type { KudoStyle } from "@prisma/client";
+import { Kudo } from "~/components/kudo";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { userId } = params;
@@ -141,7 +142,7 @@ export default function KudoModal() {
         <p className="text-blue-600 font-semibold mb-2">Preview</p>
 
         <div className="flex flex-col items-center md:flex-row gap-x-24 gap-y-2 md:gap-y-0">
-          {/* The Preview Goes Here */}
+          <Kudo profile={recipient.profile} kudo={formData} />
 
           <div className="flex-1" />
 
