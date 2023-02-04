@@ -5,11 +5,11 @@ import { Layout } from "~/components/layout";
 import { UserPanel } from "~/components/user-panel";
 import { getOtherUsers } from "~/utils/users.server";
 import { useLoaderData, Outlet } from "@remix-run/react";
-import { getFilteredKudos } from "~/utils/kudos.server";
+import { getFilteredKudos, getRecentKudos} from "~/utils/kudos.server";
 import { Kudo } from "~/components/kudo";
-import type { Kudo as IKudo, Profile } from "@prisma/client";
-import { Prisma } from "@prisma/client";
+import type { Kudo as IKudo, Profile, Prisma} from "@prisma/client";
 import { SearchBar } from "~/components/search-bar";
+import { RecentBar } from '~/components/recent-bar'
 
 interface KudoWithProfile extends IKudo {
   author: {
@@ -61,13 +61,13 @@ export const loader: LoaderFunction = async ({ request }) => {
       ],
     };
   }
-
+  const recentKudos = await getRecentKudos()
   const kudos = await getFilteredKudos(userId, sortOptions, textFilter);
-  return json({ users, kudos });
+  return json({ users, kudos, recentKudos});
 };
 
 export default function Home() {
-  const { users, kudos } = useLoaderData();
+  const { users, kudos, recentKudos } = useLoaderData();
 
   return (
     <Layout>
@@ -85,6 +85,7 @@ export default function Home() {
                 <Kudo key={kudo.id} kudo={kudo} profile={kudo.author.profile} />
               ))}
             </div>
+            <RecentBar kudos={recentKudos} />
           </div>
         </div>
       </div>
