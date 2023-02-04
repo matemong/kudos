@@ -1,4 +1,9 @@
-import { json, LoaderFunction, redirect } from "@remix-run/node";
+import {
+  ActionFunction,
+  json,
+  LoaderFunction,
+  redirect,
+} from "@remix-run/node";
 import { getUserById } from "~/utils/users.server";
 import { Modal } from "~/components/modal";
 import { getUser } from "~/utils/auth.server";
@@ -7,8 +12,47 @@ import { UserCircle } from "~/components/user-circle";
 import { useState } from "react";
 import { SelectBox } from "~/components/select-box";
 import { backgroundColorMap, colorMap, emojiMap } from "~/utils/constants";
-import type { KudoStyle } from "@prisma/client";
+import type { Color, Emoji, KudoStyle } from "@prisma/client";
 import { Kudo } from "~/components/kudo";
+import { requireUserId } from "~/utils/auth.server";
+import { createKudo } from "~/utils/kudos.server";
+
+export const action: ActionFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
+
+  const form = await request.formData();
+  const message = form.get("message");
+  const backgroundColor = form.get("backgroundColor");
+  const textColor = form.get("textColor");
+  const emoji = form.get("emoji");
+  const recipientId = form.get("recipientId");
+
+  if (
+    typeof message !== "string" ||
+    typeof recipientId !== "string" ||
+    typeof backgroundColor !== "string" ||
+    typeof textColor !== "string" ||
+    typeof emoji !== "string"
+  ) {
+    return json({ error: `Invalid Form Data` }, { status: 400 });
+  }
+
+  if (!message.length) {
+    return json({ error: `Please provide a message.` }, { status: 400 });
+  }
+
+  if (!recipientId.length) {
+    return json({ error: `No recipient found...` }, { status: 400 });
+  }
+
+  await createKudo(message, userId, recipientId, {
+    backgroundColor: backgroundColor as Color,
+    textColor: textColor as Color,
+    emoji: emoji as Emoji,
+  });
+
+  return redirect("/home");
+};
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { userId } = params;
