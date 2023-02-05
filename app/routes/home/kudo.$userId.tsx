@@ -1,7 +1,8 @@
-import {
+import type {
   ActionFunction,
+  LoaderFunction} from "@remix-run/node";
+import {
   json,
-  LoaderFunction,
   redirect,
 } from "@remix-run/node";
 import { getUserById } from "~/utils/users.server";
@@ -11,7 +12,7 @@ import { useLoaderData, useActionData } from "@remix-run/react";
 import { UserCircle } from "~/components/user-circle";
 import { useState } from "react";
 import { SelectBox } from "~/components/select-box";
-import { backgroundColorMap, colorMap, emojiMap } from "~/utils/constants";
+import { colorMap, emojiMap } from "~/utils/constants";
 import type { Color, Emoji, KudoStyle } from "@prisma/client";
 import { Kudo } from "~/components/kudo";
 import { requireUserId } from "~/utils/auth.server";
