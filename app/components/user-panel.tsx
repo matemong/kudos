@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { useNavigate } from "@remix-run/react";
 import { UserCircle } from "./user-circle";
 
